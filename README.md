@@ -74,109 +74,44 @@ let complex_num2 = num::complex::Complex::new(3.1, -4.2);
 - `UnaryExprNode` – содержит поля `operator` (строка `"-"`) и `operand` (узел литерала).
 
 ### Рисунок CST / AST для верной строки
-![AST для let complex_num2 = num::complex::Complex::new(3.1, -4.2);](assets/ast_example.png)
-
-*Примечание:* изображение создано в графическом редакторе draw.io и сохранено в папке `assets/`.
+ let complex_num2 = num::complex::Complex::new(3.1, -4.2);
+<img width="502" height="570" alt="image" src="https://github.com/user-attachments/assets/bd5a8ae2-96ac-41d8-9c5b-5dfe6ea4a54c" />
 
 ## Формат вывода AST в программе
 
 ### Текстовое представление (вкладка «AST»)
-```
-LetDeclNode
-├── name: "complex_num2"
-└── value:
-    CallExprNode
-    ├── callee:
-        PathNode
-        └── segments: ['num', 'complex', 'Complex', 'new']
-    └── arguments:
-        ├── [0]:
-            FloatLiteralNode
-            └── value: 3.1
-        └── [1]:
-            UnaryExprNode
-            ├── operator: "-"
-            └── operand:
-                FloatLiteralNode
-                └── value: -4.2
-```
+<img width="488" height="271" alt="image" src="https://github.com/user-attachments/assets/bdfeac7f-15fd-494b-a07a-8d88425a0944" />
 
-### JSON-представление (для программной обработки)
-```json
-{
-  "type": "LetDecl",
-  "name": "complex_num2",
-  "value": {
-    "type": "CallExpr",
-    "callee": {
-      "type": "Path",
-      "segments": ["num", "complex", "Complex", "new"],
-      "position": "1:20-1:45"
-    },
-    "arguments": [
-      {
-        "type": "FloatLiteral",
-        "value": 3.1,
-        "position": "1:47-1:49"
-      },
-      {
-        "type": "UnaryExpr",
-        "operator": "-",
-        "operand": {
-          "type": "FloatLiteral",
-          "value": -4.2,
-          "position": "1:52-1:55"
-        },
-        "position": "1:52-1:55"
-      }
-    ],
-    "position": "1:20-1:56"
-  },
-  "type_annotation": null,
-  "position": "1:1-1:57"
-}
-```
 
 ### Графическая визуализация (дополнительное задание)
 Диалоговое окно «Визуализация AST» отображает дерево в виде цветных прямоугольников (узлов) и соединительных линий. Запускается кнопкой «Показать AST» (F7).
 
 ## Тестовые примеры
 
-### Пример 1: Корректный ввод
-**Ввод:**
-```rust
-let complex_num2 = num::complex::Complex::new(3.1, -4.2);
-```
-**Вывод:**
-- Лексических ошибок: 0
-- Синтаксических ошибок: 0
-- Семантических ошибок: 0
-- AST построено, отображается в текстовом и графическом виде.
-
-### Пример 2: Повторное объявление
+### Пример 1: Повторное объявление
 **Ввод:**
 ```rust
 let x = num::complex::Complex::new(1.0, 2.0);
 let x = num::complex::Complex::new(3.0, 4.0);
 ```
-**Вывод:**
-- Семантическая ошибка: `Идентификатор 'x' уже объявлен ранее`
+<img width="818" height="541" alt="image" src="https://github.com/user-attachments/assets/23ec4ed3-3bfc-49cd-a9b9-4874c810ee93" />
 
-### Пример 3: Недопустимый путь
+
+### Пример 2: Недопустимый путь
 **Ввод:**
 ```rust
 let y = wrong::path::new(1.0, 2.0);
 ```
-**Вывод:**
-- Семантические ошибки: `Идентификатор 'wrong' не объявлен и не является предопределённым`, `Идентификатор 'path' не объявлен и не является предопределённым`
+<img width="779" height="575" alt="image" src="https://github.com/user-attachments/assets/41f7a952-36f2-41b7-aefa-0d4235188f88" />
 
-### Пример 4: Число вне диапазона
+
+### Пример 3: Число вне диапазона
 **Ввод:**
 ```rust
 let z = num::complex::Complex::new(9999999999, 0.0);
 ```
-**Вывод:**
-- Семантическая ошибка: `Целочисленный литерал 9999999999 выходит за пределы i32`
+<img width="803" height="546" alt="image" src="https://github.com/user-attachments/assets/4b269d7b-3beb-4602-afe1-435915d058a2" />
+
 
 ## Инструкция по запуску
 
@@ -228,6 +163,3 @@ python test_semantic_fixed.py
 ├── requirements.txt             # зависимости
 └── README.md                    # документация
 ```
-
-
-#
