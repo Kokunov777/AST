@@ -11,7 +11,7 @@ def test_basic():
         print(f"  {token.type.name:15} {token.lexeme:20} {token.start_line}:{token.start_col}-{token.end_line}:{token.end_col}")
     for err in errors:
         print(f"  ERROR line {err.line}:{err.column} {err.message}")
-    expected_count = 24
+    expected_count = 20
     assert len(tokens) == expected_count, f"Expected {expected_count} tokens, got {len(tokens)}"
     assert len(errors) == 0, f"Expected no errors, got {len(errors)}"
     assert tokens[0].type == TokenType.KEYWORD
@@ -20,36 +20,28 @@ def test_basic():
     assert tokens[2].lexeme == "complex_num2"
     assert tokens[6].type == TokenType.IDENTIFIER
     assert tokens[6].lexeme == "num"
-    assert tokens[7].type == TokenType.COLON
-    assert tokens[7].lexeme == ":"
-    assert tokens[8].type == TokenType.COLON
-    assert tokens[8].lexeme == ":"
-    assert tokens[9].type == TokenType.IDENTIFIER
-    assert tokens[9].lexeme == "complex"
-    assert tokens[10].type == TokenType.COLON
-    assert tokens[10].lexeme == ":"
-    assert tokens[11].type == TokenType.COLON
-    assert tokens[11].lexeme == ":"
-    assert tokens[12].type == TokenType.IDENTIFIER
-    assert tokens[12].lexeme == "Complex"
-    assert tokens[13].type == TokenType.COLON
-    assert tokens[13].lexeme == ":"
-    assert tokens[14].type == TokenType.COLON
-    assert tokens[14].lexeme == ":"
-    assert tokens[15].type == TokenType.IDENTIFIER
-    assert tokens[15].lexeme == "new"
-    assert tokens[16].type == TokenType.SEPARATOR
-    assert tokens[16].lexeme == "("
+    assert tokens[7].type == TokenType.SEPARATOR
+    assert tokens[7].lexeme == "::"
+    assert tokens[8].type == TokenType.IDENTIFIER
+    assert tokens[8].lexeme == "complex"
+    assert tokens[9].type == TokenType.SEPARATOR
+    assert tokens[9].lexeme == "::"
+    assert tokens[10].type == TokenType.IDENTIFIER
+    assert tokens[10].lexeme == "Complex"
+    assert tokens[11].type == TokenType.SEPARATOR
+    assert tokens[11].lexeme == "::"
+    assert tokens[12].type == TokenType.KEYWORD
+    assert tokens[12].lexeme == "new"
+    assert tokens[13].type == TokenType.SEPARATOR
+    assert tokens[13].lexeme == "("
+    assert tokens[14].type == TokenType.FLOAT
+    assert tokens[14].lexeme == "3.1"
+    assert tokens[15].type == TokenType.SEPARATOR
+    assert tokens[15].lexeme == ","
     assert tokens[17].type == TokenType.FLOAT
-    assert tokens[17].lexeme == "3.1"
-    assert tokens[18].type == TokenType.SEPARATOR
-    assert tokens[18].lexeme == ","
-    assert tokens[20].type == TokenType.OPERATOR
-    assert tokens[20].lexeme == "-"
-    assert tokens[21].type == TokenType.FLOAT
-    assert tokens[21].lexeme == "4.2"
-    assert tokens[23].type == TokenType.END_OF_STATEMENT
-    assert tokens[23].lexeme == ";"
+    assert tokens[17].lexeme == "-4.2"
+    assert tokens[19].type == TokenType.END_OF_STATEMENT
+    assert tokens[19].lexeme == ";"
     print("Test passed.")
 
 if __name__ == "__main__":
