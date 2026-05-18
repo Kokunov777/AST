@@ -349,9 +349,11 @@ python test_arithmetic2.py
 
 Проверка установки:
 ```
-clang --version   (через полный путь C:\Program Files\LLVM\bin\clang.exe)
-dot --version
+sudo apt install clang llvm
 ```
+<img width="826" height="499" alt="image" src="https://github.com/user-attachments/assets/d5c8bc9a-a6e2-4492-8148-2adb6320ae5d" />
+<img width="741" height="543" alt="image" src="https://github.com/user-attachments/assets/5664de54-e55a-49bc-90bc-5b2e4c45bdc0" />
+
 
 ### 2. Работа с AST
 Создан тестовый файл `main.c`:
@@ -366,6 +368,7 @@ int main() {
     return b;
 }
 ```
+
 
 Сгенерировано AST командой:
 ```
