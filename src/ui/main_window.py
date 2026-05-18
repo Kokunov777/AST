@@ -14,6 +14,7 @@ from src.core.analyzer import scan_rust, Token, TokenType
 from src.core.syntax_analyzer import parse_syntax, SyntaxError
 from src.core.semantic_analyzer import analyze_semantics, SemanticError
 from src.core.regex_search import RegexSearcher, MatchResult
+from src.core.arithmetic_parser import parse_arithmetic, evaluate_poliz, Quadruple
 from src.ui.editor_widgets import CodeEditor, build_editor_splitter
 from src.ui.ast_graphics import show_ast_graphics
 
@@ -82,6 +83,25 @@ class MainWindow(QMainWindow):
         self.output_ast.setFont(font)
         self.output_ast.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         self.output_tabs.addTab(self.output_ast, "AST")
+
+        # Таблица тетрад
+        self.output_quadruples = QTableWidget(0, 4)
+        self.output_quadruples.setHorizontalHeaderLabels([
+            "Операция",
+            "Аргумент 1",
+            "Аргумент 2",
+            "Результат"
+        ])
+        self.output_quadruples.setAlternatingRowColors(True)
+        self.output_quadruples.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.output_tabs.addTab(self.output_quadruples, "Тетрады")
+
+        # Текстовый виджет для ПОЛИЗ
+        self.output_poliz = QPlainTextEdit()
+        self.output_poliz.setReadOnly(True)
+        self.output_poliz.setFont(font)
+        self.output_poliz.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        self.output_tabs.addTab(self.output_poliz, "ПОЛИЗ")
 
         self.editor_tabs.currentChanged.connect(lambda _: self._update_title())
         self.editor_tabs.tabCloseRequested.connect(self.close_editor_tab)
@@ -153,6 +173,10 @@ class MainWindow(QMainWindow):
         self.action_regex_search = QAction("Поиск по РВ", self)
         self.action_regex_search.setShortcut(QKeySequence("F6"))
         self.action_regex_search.triggered.connect(self.start_regex_search)
+
+        self.action_arithmetic = QAction("Анализ арифметики", self)
+        self.action_arithmetic.setShortcut(QKeySequence("F8"))
+        self.action_arithmetic.triggered.connect(self.start_arithmetic_analysis)
 
         self.action_show_ast = QAction("Показать AST", self)
         self.action_show_ast.setShortcut(QKeySequence("F7"))
@@ -238,6 +262,7 @@ class MainWindow(QMainWindow):
         toolbar.addSeparator()
         toolbar.addAction(self.action_start)
         toolbar.addAction(self.action_regex_search)
+        toolbar.addAction(self.action_arithmetic)
         toolbar.addAction(self.action_show_ast)
         toolbar.addSeparator()
         toolbar.addAction(self.action_undo)
@@ -521,6 +546,75 @@ class MainWindow(QMainWindow):
             self.output_log.setPlainText(f"Анализ завершен. Найдено ошибок: {total_errors}")
             # Переключаем на вкладку ошибок, если есть ошибки
             self.output_tabs.setCurrentWidget(self.output_errors)
+
+    def start_arithmetic_analysis(self) -> None:
+        """Запуск анализа арифметического выражения."""
+        editor = self._current_editor()
+        if not editor:
+            return
+        text = editor.toPlainText()
+        # Очищаем таблицы и вывод
+        self.output_errors.setRowCount(0)
+        self.output_tokens.setRowCount(0)
+        self.output_quadruples.setRowCount(0)
+        self.output_poliz.clear()
+        self.output_log.clear()
+        if not text.strip():
+            self._set_output("Пуск: текст пуст. Добавьте арифметическое выражение.")
+            return
+
+        success, errors, quadruples, poliz, has_id = parse_arithmetic(text)
+
+        # Выводим ошибки
+        for err in errors:
+            row = self.output_errors.rowCount()
+            self.output_errors.insertRow(row)
+            self.output_errors.setItem(row, 0, QTableWidgetItem(err.fragment))
+            location = f"{err.line}:{err.column}"
+            self.output_errors.setItem(row, 1, QTableWidgetItem(location))
+            self.output_errors.setItem(row, 2, QTableWidgetItem(err.message))
+
+        if not success:
+            self.statusBar().showMessage(f"Найдено ошибок: {len(errors)}")
+            self.output_log.setPlainText(f"Анализ арифметического выражения завершен с ошибками.")
+            self.output_tabs.setCurrentWidget(self.output_errors)
+            return
+
+        # Успешный анализ
+        # Заполняем таблицу тетрад
+        for q in quadruples:
+            row = self.output_quadruples.rowCount()
+            self.output_quadruples.insertRow(row)
+            self.output_quadruples.setItem(row, 0, QTableWidgetItem(q.op))
+            self.output_quadruples.setItem(row, 1, QTableWidgetItem(q.arg1))
+            self.output_quadruples.setItem(row, 2, QTableWidgetItem(q.arg2))
+            self.output_quadruples.setItem(row, 3, QTableWidgetItem(q.result))
+
+        # Заполняем ПОЛИЗ
+        poliz_text = " ".join(poliz)
+        self.output_poliz.setPlainText(poliz_text)
+
+        # Вычисляем значение, если нет идентификаторов
+        value = None
+        if not has_id:
+            value = evaluate_poliz(poliz)
+
+        # Формируем сообщение в лог
+        log_lines = []
+        log_lines.append("Анализ арифметического выражения выполнен успешно.")
+        log_lines.append(f"Тетрад сгенерировано: {len(quadruples)}")
+        log_lines.append(f"ПОЛИЗ: {poliz_text}")
+        if value is not None:
+            log_lines.append(f"Значение выражения: {value}")
+        elif has_id:
+            log_lines.append("Выражение содержит идентификаторы, вычисление значения невозможно.")
+        else:
+            log_lines.append("Вычисление значения не удалось (деление на ноль?).")
+        self.output_log.setPlainText("\n".join(log_lines))
+
+        self.statusBar().showMessage("Анализ арифметики завершен успешно")
+        # Переключаем на вкладку тетрад
+        self.output_tabs.setCurrentWidget(self.output_quadruples)
 
     def show_ast_graphics(self) -> None:
         """Открыть диалог с графической визуализацией AST."""
