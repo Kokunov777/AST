@@ -496,6 +496,7 @@ dot -Tpng .main.dot -o cfg_main_O0.png
 # Открываем для сравнения
 xdg-open cfg_main_O0.png
 ```
+<img width="887" height="766" alt="image" src="https://github.com/user-attachments/assets/a114d17f-2516-4149-891b-e3e0a44ad0a6" />
 
 
 ## Индивидуальное задание (вариант)
