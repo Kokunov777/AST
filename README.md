@@ -465,6 +465,7 @@ opt -dot-cfg -disable-output complex_test_for_cfg.ll
 # Посмотрим, какие .dot файлы создались
 ls -la *.dot
 ```
+<img width="953" height="87" alt="image" src="https://github.com/user-attachments/assets/3d9ca472-e766-4006-9875-4b97396d3fa6" />
 
 ## Индивидуальное задание (вариант)
 
