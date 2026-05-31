@@ -458,17 +458,44 @@ head -100 complex_test_O2.ll
 ```
 # Сначала генерируем IR для CFG 
 clang++ -S -emit-llvm -O2 complex_test.cpp -o complex_test_for_cfg.ll
-
+```
+```
 # Генерация .dot файлов для всех функций
 opt -dot-cfg -disable-output complex_test_for_cfg.ll
-
+```
+```
 # Посмотрим, какие .dot файлы создались
 ls -la *.dot
 ```
 <img width="953" height="87" alt="image" src="https://github.com/user-attachments/assets/3d9ca472-e766-4006-9875-4b97396d3fa6" />
 
-
+```
+konfertachik
+dot -Tpng .main.dot -o cfg_main_O2.png
+```
+```
+# Открываем изображение
+xdg-open cfg_main_O2.png
+```
 <img width="1818" height="914" alt="image" src="https://github.com/user-attachments/assets/82976a19-d732-4ecc-b92b-33485ed4c85b" />
+
+### 5.1 Построение CFG для неоптимизированного кода (для сравнения)
+```
+# Генерируем IR без оптимизаций
+clang++ -S -emit-llvm -O0 complex_test.cpp -o complex_test_O0_for_cfg.ll
+```
+```
+# Генерируем .dot файлы
+opt -passes='dot-cfg' complex_test_O0_for_cfg.ll -disable-output
+```
+```
+# Конвертируем в PNG
+dot -Tpng .main.dot -o cfg_main_O0.png
+```
+```
+# Открываем для сравнения
+xdg-open cfg_main_O0.png
+```
 
 
 ## Индивидуальное задание (вариант)
