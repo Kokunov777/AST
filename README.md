@@ -467,6 +467,10 @@ ls -la *.dot
 ```
 <img width="953" height="87" alt="image" src="https://github.com/user-attachments/assets/3d9ca472-e766-4006-9875-4b97396d3fa6" />
 
+
+<img width="1818" height="914" alt="image" src="https://github.com/user-attachments/assets/82976a19-d732-4ecc-b92b-33485ed4c85b" />
+
+
 ## Индивидуальное задание (вариант)
 
 **Вариант:** Анализ пользовательских операторов для комплексных чисел.
