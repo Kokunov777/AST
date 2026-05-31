@@ -419,6 +419,10 @@ head -100 ast_dump.txt
 
 - **C оптимизаций (-O2):** `clang++ -S -emit-llvm -O2 complex_test.cpp -o complex_test_O2.ll`
   
+<img width="1809" height="898" alt="image" src="https://github.com/user-attachments/assets/afd0e949-7a2c-4850-a7fa-ce662c5cb1fc" />
+
+
+  
 #### Сравнение IR
 
 * complex_test_00.ll** содержит:
