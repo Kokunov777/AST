@@ -368,21 +368,21 @@ dot --version
 mkdir ~/lab7_clang_llvm
 cd ~/lab7_clang_llvm
 ```
-Создан тестовый файл `main.cpp`:
+Создан тестовый файл `complex_test.cpp`:
 ```
 #include <iostream>
 #include <complex>
 
 int main() {
-    // Исходные комплексные числа
+    
     std::complex<double> z1(3.0, 4.0);
     std::complex<double> z2(1.0, 2.0);
 
-    // Вычисление выражения: z3 = z1 * z2 + z1
+
     auto mul = z1 * z2;
     auto z3 = mul + z1;
 
-    // Вывод результата
+   
     std::cout << "Result: " << z3.real() << " " << z3.imag() << std::endl;
     return 0;
 }
@@ -408,8 +408,7 @@ head -100 ast_dump.txt
 <img width="653" height="962" alt="image" src="https://github.com/user-attachments/assets/bff59c55-ed02-49e8-8bd5-52dc49bf52bc" />
 
 
-
-Полученное дерево показывает структуру функций, параметров, операторов и выражений. Например, для функции `square` видно бинарный оператор умножения с двумя операндами-ссылками на параметр `x`.
+В AST присутствуют узлы FunctionDecl для main, VarDecl для переменных, CXXOperatorCallExpr для операторов * и +, CXXMemberCallExpr для вызовов .real() и .imag().
 
 ### 3. Генерация LLVM IR
 Сгенерированы два варианта IR:
@@ -418,6 +417,8 @@ head -100 ast_dump.txt
 
 <img width="806" height="914" alt="image" src="https://github.com/user-attachments/assets/8793af16-64e6-46de-8bc5-178822eacda0" />
 
+- **C оптимизаций (-O2):** `clang++ -S -emit-llvm -O2 complex_test.cpp -o complex_test_O2.ll`
+  
 #### Сравнение IR
 
 * complex_test_00.ll** содержит:
