@@ -423,7 +423,10 @@ head -100 ast_dump.txt
 
 
   
-#### Сравнение IR 
+#### Сравнение IR до и после оптимизаций 
+<img width="1219" height="726" alt="image" src="https://github.com/user-attachments/assets/ddce4c57-9f81-4dd3-89ef-c2ccac5aaedd" />
+файл complex_test_02.ll значительно короччему, чем complex_test_00.ll
+
 
 
 ### 4. Оптимизация IR
