@@ -353,39 +353,74 @@ sudo apt install clang llvm
 ```
 <img width="826" height="499" alt="image" src="https://github.com/user-attachments/assets/d5c8bc9a-a6e2-4492-8148-2adb6320ae5d" />
 <img width="741" height="543" alt="image" src="https://github.com/user-attachments/assets/5664de54-e55a-49bc-90bc-5b2e4c45bdc0" />
+```
+проверка установки
+clang --version
+opt --vrsion
+dot --version
+```
+<img width="693" height="376" alt="image" src="https://github.com/user-attachments/assets/ab94eb77-dbde-4dc0-90f4-1a2e6cde0e83" />
 
 
 ### 2. Работа с AST
-Создан тестовый файл `main.c`:
-```c
-int square(int x) {
-    return x * x;
-}
+```
+создание папаку для работы
+mkdir ~/lab7_clang_llvm
+cd ~/lab7_clang_llvm
+```
+Создан тестовый файл `main.cpp`:
+```
+#include <iostream>
+#include <complex>
 
 int main() {
-    int a = 5;
-    int b = square(a);
-    return b;
+    // Исходные комплексные числа
+    std::complex<double> z1(3.0, 4.0);
+    std::complex<double> z2(1.0, 2.0);
+
+    // Вычисление выражения: z3 = z1 * z2 + z1
+    auto mul = z1 * z2;
+    auto z3 = mul + z1;
+
+    // Вывод результата
+    std::cout << "Result: " << z3.real() << " " << z3.imag() << std::endl;
+    return 0;
 }
 ```
 
 
-Сгенерировано AST командой:
+генерация  AST командой:
 ```
-clang -Xclang -ast-dump -fsyntax-only main.c
+clang++ -Xclang -ast-dump -fsyntax-only complex_test.cpp
 ```
+<img width="1308" height="904" alt="image" src="https://github.com/user-attachments/assets/57a3cbc5-f980-41cf-a5a8-7b22afeef809" />
+
+save ast is faill
+```
+clang++ -Xclang -ast-dump -fsyntax-only complex_test.cpp > ast_dump.txt 2>81
+```
+<img width="163" height="372" alt="image" src="https://github.com/user-attachments/assets/565a2e6a-cf3e-4194-a024-0b2b7f3e3da9" />
+
+begin ast-fail
+```
+head -100 ast_dump.txt
+```
+<img width="653" height="962" alt="image" src="https://github.com/user-attachments/assets/bff59c55-ed02-49e8-8bd5-52dc49bf52bc" />
+
+
 
 Полученное дерево показывает структуру функций, параметров, операторов и выражений. Например, для функции `square` видно бинарный оператор умножения с двумя операндами-ссылками на параметр `x`.
 
 ### 3. Генерация LLVM IR
 Сгенерированы два варианта IR:
 
-- **Без оптимизаций (-O0):** `clang -S -emit-llvm -O0 main.c -o main_O0.ll`
-- **С оптимизациями (-O2):** `clang -S -emit-llvm -O2 main.c -o main_O2.ll`
+- **Без оптимизаций (-O0):** `clang++ -S -emit-llvm -O0 complex_test.cpp -o complex_test_00.ll`
+
+<img width="806" height="914" alt="image" src="https://github.com/user-attachments/assets/8793af16-64e6-46de-8bc5-178822eacda0" />
 
 #### Сравнение IR
 
-**main_O0.ll** содержит:
+* complex_test_00.ll** содержит:
 - Инструкции `alloca`, `store`, `load` для каждой локальной переменной.
 - Явные вызовы функции `square` с передачей аргумента через память.
 - Возврат значения через загрузку из памяти.
