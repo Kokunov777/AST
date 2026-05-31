@@ -447,6 +447,7 @@ clang++ -S -emit-llvm -O3 complex_test.cpp -o complex_test_O3.ll
 # Просмотр оптимизированного IR
 head -100 complex_test_O2.ll
 ```
+<img width="1824" height="885" alt="image" src="https://github.com/user-attachments/assets/9919e847-52a6-4eeb-b417-28bc244dab67" />
 
 Отсутствие инструкций alloca
 Отсутствие вызовов call для операторов * и +
